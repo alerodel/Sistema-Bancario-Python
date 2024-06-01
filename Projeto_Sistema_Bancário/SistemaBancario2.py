@@ -1,10 +1,6 @@
 ################## Sistema Bancário 2.0 - Alexandre Rodel de Almeida ###########################
-##### Criação de um sistema de Bancário
-# Parte 1: Módulo de Depósito
-# Parte 2: Módulo de Consulta
-# Parte 3: Módulo de Saque
+##### Melhoria do Sistema de Bancário criado anteriormente
 
-######
 #from IPython.display import clear_output
 
 saldoAnterior = 0
