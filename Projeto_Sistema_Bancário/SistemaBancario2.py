@@ -1,62 +1,86 @@
 ################## Sistema Bancário 2.0 - Alexandre Rodel de Almeida ###########################
-##### Melhoria do Sistema de Bancário criado anteriormente
+##### Criação de um sistema de Bancário
+# Parte 1: Módulo de Depósito
+# Parte 2: Módulo de Consulta
+# Parte 3: Módulo de Saque
 
-import textwrap
+######
+#from IPython.display import clear_output
 
-def menu():
-    menu = """\n
-    ====================== MENU ======================
-    [d]\tDeposito
-    [s]\tSaque
-    [e]\tExtrato
-    [nc]\tNova Conta
-    [lc]\tListar Contas
-    [nu]\tNovo Usuario
-    [q]\tSair
-    => """
-    return input(textwrap.dedent(menu))
+saldoAnterior = 0
+limite = 500
+extrato = ""
+nSaques = 00
+limiteSaques = 3
 
-#menu()
+print("Seja bem vindo ao Banco DIO".center(10, '#'))
+print("Escolha um de nossos serviços".center(10, '#'))
+menu = """
 
-###################################################################################################################
+[d] Deposito
+[s] Saque
+[e] Extrato
+[q] Sair
 
-def depositar(saldo, valor, extrato, /):
-    if valor > 0:
-        print(f"Seu valor de deposito é de R$ {valor}")
-        print(f"Confirma a operacao de desposito no valor de R$ {valor}?")
-        print("Digite 0 para 'Sim' ou 1 para 'Nao'.")
-        confirmaDeposito = int(input())
+=> """
+
+while True:
+    operacao = input(menu) 
         
-        if confirmaDeposito == 0:
-            saldo += valor
-            extrato += f"Deposito: R$ {valor:.2f}\n"
-            print("\n=== Depósito realizado com sucesso! ===")
-    else:
-        print("\n@@@ Operação falhou! o valor informado é inválido. @@@")
-    return saldo, extrato
+    if operacao == "d":
+        print("Bem vindo ao modulo de 'Deposito' do DIO Bankline.".center(10, '#'))
+        print("Por favor, digite o valor do deposito.".center(10, '#'))
+        deposito = float(input())
+        if deposito > 0:
+            print(f"Seu valor de deposito é de R$ {deposito}".center(10, '#'))
+            print(f"Confirma a operacao de desposito no valor de R$ {deposito}?".center(10, '#'))
+            print("Digite 0 para 'Sim' ou 1 para 'Nao'.".center(10, '#'))
+            confirmaDeposito = int(input())
+            
+            if confirmaDeposito == 0:
+                print("Deposito efetuado com Sucesso!".center(10, '#'))
+            
+            saldoAnterior += deposito
+            extrato += f"Deposito: R$ {deposito:.2f}\n"
+        else:
+            print(f"A operação falhou! Digite um valor de depósito diferente de R$ {deposito} da próxima vez.")
+    ######################################################################################################################
+    elif operacao == "s":
+        print("Bem vindo ao modulo de 'Saque' do DIO Bankline.".center(10, '#'))
+        print("Por favor, digite o valor do saque.".center(10, '#'))
+        saque = float(input())
+        
+        if saldoAnterior < saque <= saldoAnterior + limite:
+            print(f"Atenção! Ao concluir essa operação, você estará utilizando o limite de R${limite} da sua conta.")
+            print(f"Confirma a operacao de saque no valor de R$ {saque}?".center(10, '#'))
+            print("Digite 0 para 'Sim' ou 1 para 'Nao'.".center(10, '#'))
+            confirmaSaque = int(input())
+            if confirmaSaque == 0:
+                print("Saque efetuado com Sucesso!".center(10, '#'))
+                saldoAnterior -= saque
+                extrato += f"Saque: R$ {saque:.2f}\n"
+                nSaques += 1
 
-######################################################################################################################
+        elif saque < saldoAnterior:
+            print(f"Seu valor de saque é de R$ {saque}".center(10, '#'))
+            print(f"Confirma a operacao de saque no valor de R$ {saque}?".center(10, '#'))
+            print("Digite 0 para 'Sim' ou 1 para 'Nao'.".center(10, '#'))
+            confirmaSaque = int(input())
+            if confirmaSaque == 0:
+                print("Saque efetuado com Sucesso!".center(10, '#'))
+                saldoAnterior -= saque
+                extrato += f"Saque: R$ {saque:.2f}\n"
+                nSaques += 1
+        
+        elif saque > saldoAnterior + limite:
+            print("Não e possível realizar o saque.")
 
-def sacar(*, saldo, valor, extrato, limite, nSaques, limiteSaques):        
-    if saldo < valor <= saldo + limite:
-        print(f"\n=== Atenção! Ao concluir essa operação, você estará utilizando o limite de R${limite} da sua conta. ===")
-        print(f"\n=== Confirma a operacao de saque no valor de R$ {valor}? ===")
-        print("\n=== Digite 0 para 'Sim' ou 1 para 'Nao'. ===")
-        confirmaSaque = int(input())
-        if confirmaSaque == 0:
-            print("\n === Saque realizado com Sucesso! ===")
-            saldo -= valor
-            extrato += f"Saque: R$ {valor:.2f}\n"
-            nSaques += 1
-    elif valor < saldo:
-        print(f"\n=== Seu valor de saque é de R$ {valor} ===")
-        print(f"\n=== Confirma a operacao de saque no valor de R$ {valor}? ===")
-        print("\n=== Digite 0 para 'Sim' ou 1 para 'Nao'. ===")
-        confirmaSaque = int(input())
-        if confirmaSaque == 0:
-            print("\n=== Saque realizado com Sucesso! ===")
-            saldo -= valor
-            extrato += f"Saque: R$ {valor:.2f}\n"
+        elif nSaques > limiteSaques:
+            print(f"Desculpe, você excedeu o seu limite diário de saques.")
+
+        elif saque > 0:
+            saldoAnterior -= saque
+            extrato += f"Saque: R$ {saque:.2f}\n"
             nSaques += 1
     elif valor > saldo + limite:
         print("\n@@@ Não e possível realizar o saque. @@@")
@@ -165,4 +189,11 @@ def main():
         elif operacao == "q":
             break
 
-main()
+    # if option == 1:    
+    #     print("Deseja efetuar alguma outra operacao no DIO bankline?".center(10, '#'))
+    #     print("Digite 0 voltar ao Menu Principal ou 1 Sair.".center(10, '#'))
+    #     opcao = input("")
+    #     if opcao == 1:
+    #         pass
+    #     print("Obrigado por escolher o DIO Bankline!".center(10, '#'))
+    #     print("Até logo!")
